@@ -1,18 +1,24 @@
+"""
+Autores: 
+Joalison Matheus da Silva Ferreira e 
+Matheus Soares de Sales
+"""
+
 import json
 import requests
 from socket import *
 
-def githubReps(usuario):
-  resposta = requests.get(f"https://api.github.com/users/{usuario}/repos")
+def githubReps(user):
+  answer = requests.get(f"https://api.github.com/users/{user}/repos")
   reps = []
 
-  if resposta.status_code == 200:
-    dados = resposta.json()
-    if type(dados) is not int:
-      for i in range(len(dados)):
+  if answer.status_code == 200:
+    dataJson = answer.json()
+    if type(dataJson) is not int:
+      for i in range(len(dataJson)):
         reps.append({
-          "nome": dados[i]["name"],
-          "html_url": dados[i]["html_url"],
+          "nome": dataJson[i]["name"],
+          "html_url": dataJson[i]["html_url"],
         })
 
   repsString = json.dumps(reps, indent=4, sort_keys=True, default=str)
@@ -25,19 +31,19 @@ sock = socket(AF_INET, SOCK_STREAM)
 
 sock.bind((HOST, PORT))
 
-sock.listen(5)
+sock.listen(1)
 
 while True:
-  conexao, endereco = sock.accept()
-  print("Server conectado por", endereco, "\n")
+  connection, address = sock.accept()
+  print("Server conectado por", address, "\n")
 
   while True:
-    data = conexao.recv(4096)
+    data = connection.recv(4096)
 
     if not data: break
 
-    mensagem = githubReps(data.decode())
+    message = githubReps(data.decode())
 
-    conexao.sendall(mensagem.encode("utf-8"))
+    connection.sendall(message.encode("utf-8"))
 
-  conexao.close()
+  connection.close()
