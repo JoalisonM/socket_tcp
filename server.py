@@ -8,21 +8,21 @@ import json
 import requests
 from socket import *
 
-def githubReps(user):
+def githubRepos(user):
   answer = requests.get(f"https://api.github.com/users/{user}/repos")
-  reps = []
+  repos = []
 
   if answer.status_code == 200:
     dataJson = answer.json()
     if type(dataJson) is not int:
       for i in range(len(dataJson)):
-        reps.append({
+        repos.append({
           "nome": dataJson[i]["name"],
           "html_url": dataJson[i]["html_url"],
         })
 
-  repsString = json.dumps(reps, indent=4, sort_keys=True, default=str)
-  return repsString
+  reposString = json.dumps(repos, indent=4, sort_keys=True, default=str)
+  return reposString
 
 HOST = ""
 PORT = 50007
@@ -42,7 +42,7 @@ while True:
 
     if not data: break
 
-    message = githubReps(data.decode())
+    message = githubRepos(data.decode())
 
     connection.sendall(message.encode("utf-8"))
 
